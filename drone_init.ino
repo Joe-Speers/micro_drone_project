@@ -9,25 +9,27 @@ void setup(){
     if(comms.CommsSetup()==0){
         Serial.println("COMMS OK");
     } else {
-        Serial.println("COMMS FAILED TO INITILISE");
+        Serial.println("COMMS FAILED TO INITIALISE");
     }
 
     if(imu.IMUSetup()==0){
         Serial.println("IMU OK");
     } else {
-        Serial.println("IMU FAILED TO INITILISE");
+        Serial.println("IMU FAILED TO INITIALISE");
     }
 
     
 }
-
+int i=0;
 void loop(){
+    comms.UpdateComms();
     if(!imu.ReadAcc()){
         comms.Send("IMU read error");
-    } else {
-        comms.Send("X:"+String(imu.acc[0]));
-        comms.Send("Y:"+String(imu.acc[1]));
-        comms.Send("Z:"+String(imu.acc[2]));
     }
-    delay(16);
+    //comms.Send("X:"+String(imu.acc[0]));
+    //comms.Send("Y:"+String(imu.acc[1]));
+    //comms.Send("Z:"+String(imu.acc[2]));
+    //comms.Send("########"+String(i));
+    i++;
+    //delay(20);
 }
