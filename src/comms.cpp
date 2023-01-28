@@ -3,7 +3,6 @@
  
 BLEService droneService("180F");
 byte consoleOutBuf[512];
-uint8_t controlin[5];
 BLECharacteristic consoleOut("AAAA", BLERead | BLENotify, 512,false);
 BLECharacteristic controlIn("BBBB", BLEWrite | BLENotify, 512,false);
 bool isBTConnected=false;
@@ -21,7 +20,8 @@ bool Comms::CommsSetup(){
     droneService.addCharacteristic(controlIn);
     // add service
     BLE.addService(droneService);
-    
+    controlin[0]=0;
+    controlin[1]=0;
     // start advertising
     BLE.advertise();
     return true;
