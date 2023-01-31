@@ -1,14 +1,23 @@
 #include "include/motors.h"
-
+#ifndef SIMULATION
 #include "nRF52_MBED_PWM.h"
+mbed::PwmOut* BLpwm   = NULL;
+mbed::PwmOut* BRpwm   = NULL;
+mbed::PwmOut* FLpwm   = NULL;
+mbed::PwmOut* FRpwm   = NULL;
+#else
+#include "../simulator.h"
+int BLpwm   = 0;
+int BRpwm   = 0;
+int FLpwm   = 0;
+int FRpwm   = 0;
+#define OUTPUT 0
+#endif
 
 static int write_resolution = 8;
 static int read_resolution = 10;
 
-#define BLmotpin 3
-#define BRmotpin 2
-#define FLmotpin 0
-#define FRmotpin 1
+
 
 #define PWM_FREQUENCY 4000
 
@@ -17,10 +26,7 @@ float BRmot=0;
 float FLmot=0;
 float FRmot=0;
 
-mbed::PwmOut* BLpwm   = NULL;
-mbed::PwmOut* BRpwm   = NULL;
-mbed::PwmOut* FLpwm   = NULL;
-mbed::PwmOut* FRpwm   = NULL;
+
 
 bool Motors::Setup(){
     return true;

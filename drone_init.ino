@@ -2,20 +2,23 @@
 - add yaw feedback loop
 - add integral control
 */
-#ifdef _WIN32
+#ifdef SIMULATION
 //simulation mode
 #include "simulator.h"
 #else
+#include "src/include/comms.h"
+#include "src/include/imu.h"
 //normal mode
 #endif
-#include "src/include/imu.h"
-#include "src/include/comms.h"
 #include "src/include/motors.h"
 #include "src/include/util.h"
 #include<cmath>
+
+Motors motors;
+#ifndef SIMULATION
 IMU imu;
 Comms comms;
-Motors motors;
+#endif
 
 
 void setup(){
@@ -44,7 +47,7 @@ void loop(){
         comms.UpdateComms();
         
     }
-    if(i%100==0 && false){
+    if(i%100==0 && true){
         comms.Send("A");
         comms.Send("AX:"+String(imu.acc[0]));
         comms.Send("AY:"+String(imu.acc[1]));

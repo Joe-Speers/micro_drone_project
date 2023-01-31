@@ -1,7 +1,8 @@
+#ifndef SIMULATION
 #include "include/imu.h"
 #include "LSM6DS3.h"
 #include "Wire.h"
-#define RECORD_INTERVAL 1
+#include "include/util.h"
 LSM6DS3 myIMU(I2C_MODE, 0x6A);    //I2C device address 0x6A
 bool is_setup=false;
 int record_step=0;
@@ -54,6 +55,4 @@ bool IMU::ReadAcc(){
     if(errors!=0) return false;
     return true;
 }
-void IMU::ReadGyro(){
-    if(!is_setup) return;
-}
+#endif

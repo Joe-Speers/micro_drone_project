@@ -9,5 +9,4 @@ class IMU{
         float* gyro=recording_gyro;
         bool IMUSetup();
         bool ReadAcc();
-        void ReadGyro();
 };

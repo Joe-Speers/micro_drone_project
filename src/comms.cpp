@@ -1,6 +1,6 @@
+#ifndef SIMULATION
 #include "include/comms.h"
 #include <ArduinoBLE.h>
- 
 BLEService droneService("180F");
 byte consoleOutBuf[512];
 BLECharacteristic consoleOut("AAAA", BLERead | BLENotify, 512,false);
@@ -52,3 +52,4 @@ bool Comms::Send(String msg){
     consoleOut.writeValue(consoleOutBuf,msg.length()+1);
     return true;
 }
+#endif
