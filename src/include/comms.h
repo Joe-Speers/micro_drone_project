@@ -1,4 +1,6 @@
+#ifndef SIMULATION
 #include <Arduino.h>
+#endif
 class Comms{
     public:
     

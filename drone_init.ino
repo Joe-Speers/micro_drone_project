@@ -2,6 +2,12 @@
 - add yaw feedback loop
 - add integral control
 */
+#ifdef _WIN32
+//simulation mode
+#include "simulator.h"
+#else
+//normal mode
+#endif
 #include "src/include/imu.h"
 #include "src/include/comms.h"
 #include "src/include/motors.h"
@@ -29,6 +35,7 @@ void setup(){
     
 }
 int i=0;
+bool step=false;
 void loop(){
     if(!imu.ReadAcc()){
             //comms.Send("IMU read error");
@@ -37,8 +44,28 @@ void loop(){
         comms.UpdateComms();
         
     }
-    motors.NewSettings(comms.controlin[0],comms.controlin[1],-imu.gyro[1]/100,imu.gyro[0]/100);
-    if(pow(imu.acc[0],2)+pow(imu.acc[1],2)+pow(imu.acc[2],2)>pow(3,2)){
+    if(i%100==0 && false){
+        comms.Send("A");
+        comms.Send("AX:"+String(imu.acc[0]));
+        comms.Send("AY:"+String(imu.acc[1]));
+        comms.Send("AZ:"+String(imu.acc[2]));
+        comms.Send("G");
+        comms.Send("GX:"+String(imu.gyro[0]));
+        comms.Send("GY:"+String(imu.gyro[1]));
+        comms.Send("GZ:"+String(imu.gyro[2]));
+    }
+    //motors.NewSettings(comms.controlin[0],comms.controlin[1],,;
+    motors.NewSettings(comms.controlin[0],comms.controlin[1],(float(comms.controlin[2])/100.1)*(-imu.acc[1]*10)+(-imu.gyro[0]/100),(float(comms.controlin[2])/100.1)*(imu.acc[0]*10)+(-imu.gyro[1]/100));
+    //if(imu.gyro[0]<-500){
+    //    step=true;
+    //}
+    //if(!step){
+    //    motors.NewSettings(comms.controlin[0],50,0,0);
+    //} else{
+    //    motors.NewSettings(comms.controlin[0],50,0,-500);
+    //}
+    
+    if(pow(imu.acc[0],2)+pow(imu.acc[1],2)+pow(imu.acc[2],2)>pow(5,2)){
         motors.NewSettings(0,0,0,0);
         
         comms.Send("ACCELEROMETER X:"+String(imu.acc[0])+", Y:"+String(imu.acc[1])+", Z:"+String(imu.acc[2]));
@@ -66,9 +93,7 @@ void loop(){
         }
         
     }
-    //comms.Send("X:"+String(imu.acc[0]));
-    //comms.Send("Y:"+String(imu.acc[1]));
-    //comms.Send("Z:"+String(imu.acc[2]));
+    
     //comms.Send("########"+String(i));
     i++;
     if(i>10000000) i=0;

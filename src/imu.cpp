@@ -16,7 +16,7 @@ bool IMU::IMUSetup(){
     gyro[2]=0;
     myIMU.settings.gyroSampleRate = 1666;
     myIMU.settings.accelSampleRate = 1666;
-    myIMU.settings.accelBandWidth = 400;
+    //myIMU.settings.accelBandWidth = 400;
     myIMU.settings.gyroBandWidth = 400;
     myIMU.settings.fifoModeWord = 0;
     myIMU.settings.gyroFifoEnabled = 0;
@@ -37,6 +37,7 @@ bool IMU::ReadAcc(){
         if(acc>=recording_acc+RECORD_LENGTH*3)acc=recording_acc;
         if(gyro>=recording_gyro+RECORD_LENGTH*3)gyro=recording_gyro;
     }
+
     //Acelerometer axis X
     acc[0]=myIMU.readFloatAccelX();
 

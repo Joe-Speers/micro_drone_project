@@ -8,8 +8,9 @@ address = "FB:5B:53:8A:0F:AE"
 CONSOLE_UUID = "0000aaaa-0000-1000-8000-00805f9b34fb"
 CONTROL_UUID = "0000bbbb-0000-1000-8000-00805f9b34fb"
 control_settings = [0, 255, 255, 0, 0]
-control_settings[0]=200    #thrust
-control_settings[1]=40    #k val
+control_settings[0]=60    #thrust
+control_settings[1]=20   #k val
+control_settings[2]=40   #kp percentage
 
 running=True
 downloadmode=False
