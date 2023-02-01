@@ -1,4 +1,5 @@
 #include "include/motors.h"
+#include "include/util.h"
 #ifndef SIMULATION
 #include "nRF52_MBED_PWM.h"
 mbed::PwmOut* BLpwm   = NULL;
@@ -21,10 +22,7 @@ static int read_resolution = 10;
 
 #define PWM_FREQUENCY 4000
 
-float BLmot=0;
-float BRmot=0;
-float FLmot=0;
-float FRmot=0;
+
 
 
 
@@ -36,18 +34,8 @@ bool Motors::Setup(){
     pinMode(FRmotpin, OUTPUT);
 }
 
-bool Motors::NewSettings(float thrust,float k,float roll, float pitch){
-    
-    BLmot=thrust-pitch*k-roll*k;
-    BRmot=thrust-pitch*k+roll*k;
-    FLmot=thrust+pitch*k-roll*k;
-    FRmot=thrust+pitch*k+roll*k;
-    if(thrust==0){
-        BLmot=0;
-        BRmot=0;
-        FLmot=0;
-        FRmot=0;
-    }
+bool Motors::NewSettings(float BLmot,float BRmot,float FLmot,float FRmot){
+    BLmot*=1.0;//adjust for different prop
     if(BLmot>100)BLmot=100;
     if(BRmot>100)BRmot=100;
     if(FLmot>100)FLmot=100;

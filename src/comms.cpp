@@ -27,7 +27,7 @@ bool Comms::CommsSetup(){
     return true;
 }
 
-void Comms::UpdateComms(){
+bool Comms::UpdateComms(){
     BLEDevice central = BLE.central();
  
     // if a central is connected to peripheral:
@@ -43,8 +43,10 @@ void Comms::UpdateComms(){
             Serial.println("here");
             controlIn.readValue(controlin,5);
             Serial.println("recieved:"+String(controlin[2]));
+            return true;
         }
     }
+    return false;
 }
 bool Comms::Send(String msg){
     Serial.println(msg);

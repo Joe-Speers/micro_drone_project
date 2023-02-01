@@ -7,5 +7,5 @@ class Comms{
         uint8_t controlin[5];
         bool CommsSetup();
         bool Send(String msg);
-        void UpdateComms();
+        bool UpdateComms(); //returns true if client has sent a message
 };

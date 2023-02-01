@@ -2,6 +2,7 @@
 - add yaw feedback loop
 - add integral control
 */
+
 #ifdef SIMULATION
 //simulation mode
 #include "simulator.h"
@@ -39,6 +40,10 @@ void setup(){
 }
 int i=0;
 bool step=false;
+float BLmot=0;
+float BRmot=0;
+float FLmot=0;
+float FRmot=0;
 void loop(){
     if(!imu.ReadAcc()){
             //comms.Send("IMU read error");
@@ -47,7 +52,10 @@ void loop(){
         comms.UpdateComms();
         
     }
-    if(i%100==0 && true){
+    if(i%100==0){
+        Serial.println(i);
+    }
+    if(i%100==0 && false){
         comms.Send("A");
         comms.Send("AX:"+String(imu.acc[0]));
         comms.Send("AY:"+String(imu.acc[1]));
@@ -57,8 +65,23 @@ void loop(){
         comms.Send("GY:"+String(imu.gyro[1]));
         comms.Send("GZ:"+String(imu.gyro[2]));
     }
-    //motors.NewSettings(comms.controlin[0],comms.controlin[1],,;
-    motors.NewSettings(comms.controlin[0],comms.controlin[1],(float(comms.controlin[2])/100.1)*(-imu.acc[1]*10)+(-imu.gyro[0]/100),(float(comms.controlin[2])/100.1)*(imu.acc[0]*10)+(-imu.gyro[1]/100));
+    float thrust=comms.controlin[0];
+    float ks=float(comms.controlin[1])/10.0;
+    float kp=comms.controlin[2];
+    float roll=kp*(-imu.acc[1]*10)+ks*(-imu.gyro[0]/100);
+    float pitch=kp*(imu.acc[0]*10)+ks*(-imu.gyro[1]/100);
+    float yaw=(-imu.gyro[2]/100)*float(comms.controlin[3])/10;
+    BLmot=thrust+yaw-pitch-roll;
+    BRmot=thrust-yaw-pitch+roll;
+    FLmot=thrust-yaw+pitch-roll;
+    FRmot=thrust+yaw+pitch+roll;
+    if(thrust==0){
+        BLmot=0;
+        BRmot=0;
+        FLmot=0;
+        FRmot=0;
+    }
+    motors.NewSettings(BLmot,BRmot,FLmot,FRmot);
     //if(imu.gyro[0]<-500){
     //    step=true;
     //}
@@ -68,7 +91,8 @@ void loop(){
     //    motors.NewSettings(comms.controlin[0],50,0,-500);
     //}
     
-    if(pow(imu.acc[0],2)+pow(imu.acc[1],2)+pow(imu.acc[2],2)>pow(5,2)){
+    //if(pow(imu.acc[0],2)+pow(imu.acc[1],2)+pow(imu.acc[2],2)>pow(4,2)){
+    if(imu.acc[2]<-0.3){
         motors.NewSettings(0,0,0,0);
         
         comms.Send("ACCELEROMETER X:"+String(imu.acc[0])+", Y:"+String(imu.acc[1])+", Z:"+String(imu.acc[2]));
@@ -88,10 +112,11 @@ void loop(){
         comms.Send("DOWNLOAD_COMPLETE");
         comms.Send("DOWNLOAD_COMPLETE");
         comms.Send("DOWNLOAD_COMPLETE");
-        for(int j=0; j<2000; j++){
-            j=0;//lock in loop
+        while(true){//loop until new startup command recieved
             delay(10);
-            comms.UpdateComms();
+            if(comms.UpdateComms()){
+                break;
+            }
             imu.ReadAcc();
         }
         
@@ -100,5 +125,5 @@ void loop(){
     //comms.Send("########"+String(i));
     i++;
     if(i>10000000) i=0;
-    delay(1);
+    //delay(1);
 }
