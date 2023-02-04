@@ -40,16 +40,23 @@ void setup(){
 }
 int i=0;
 bool step=false;
+float x_integral=0;
+float y_integral=0;
 float BLmot=0;
 float BRmot=0;
 float FLmot=0;
 float FRmot=0;
+float dt=0;
 void loop(){
+    dt=0.003;
     if(!imu.ReadAcc()){
             //comms.Send("IMU read error");
     }
     if(i%10==0){
-        comms.UpdateComms();
+        if(comms.UpdateComms()){
+            x_integral=0;
+            y_integral=0;
+        }
         
     }
     if(i%100==0){
@@ -67,10 +74,14 @@ void loop(){
     }
     float thrust=comms.controlin[0];
     float ks=float(comms.controlin[1])/10.0;
+    
     float kp=comms.controlin[2];
-    float roll=kp*(-imu.acc[1]*10)+ks*(-imu.gyro[0]/100);
-    float pitch=kp*(imu.acc[0]*10)+ks*(-imu.gyro[1]/100);
-    float yaw=(-imu.gyro[2]/100)*float(comms.controlin[3])/10;
+    float ki=float(comms.controlin[3])/10.0;
+    float roll=kp*(-imu.acc[1]*10)+ks*(-imu.gyro[0]/100)+ki*(-x_integral/10);
+    float pitch=kp*(imu.acc[0]*10)+ks*(-imu.gyro[1]/100)+ki*(-y_integral/10);
+    x_integral+=imu.gyro[0]*dt;
+    y_integral+=imu.gyro[1]*dt;
+    float yaw=(-imu.gyro[2]/100)*float(comms.controlin[4])/10;
     BLmot=thrust+yaw-pitch-roll;
     BRmot=thrust-yaw-pitch+roll;
     FLmot=thrust-yaw+pitch-roll;
@@ -115,6 +126,8 @@ void loop(){
         while(true){//loop until new startup command recieved
             delay(10);
             if(comms.UpdateComms()){
+                x_integral=0;
+                y_integral=0;
                 break;
             }
             imu.ReadAcc();
