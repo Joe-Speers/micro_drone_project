@@ -41,7 +41,7 @@ bool Comms::UpdateComms(){
     if(central.connected()){
         if (controlIn.written()) {
             Serial.println("here");
-            controlIn.readValue(controlin,5);
+            controlIn.readValue(controlin,6);
             Serial.println("recieved:"+String(controlin[2]));
             return true;
         }

@@ -9,14 +9,17 @@
 #include "drone_init.ino"
 
 
-float motor_output[4];
-float true_gyro[3];
-float true_acc[3];
 
-#define MOTOR_FORCE 0.1
+
 #define MOTOR_DISTANCE_FROM_CENTRE 0.05
 #define MASS_MOMENT_INTERTIA 0.0004
+#define MAX_MOTOR_THRUST 0.1
 #define dt 0.001
+
+float motor_output[4];
+float prop_speed[4];
+float true_gyro[3];
+float true_acc[3];
 
 int main(){
     
@@ -34,7 +37,7 @@ int main(){
     while(true){
         loop();
         //physics
-        float x_acc=(motor_output[FRmotpin]+motor_output[BRmotpin]-motor_output[FLmotpin]-motor_output[BLmotpin])*MOTOR_FORCE*MOTOR_DISTANCE_FROM_CENTRE/MASS_MOMENT_INTERTIA;
+        float x_acc=(motor_output[FRmotpin]+motor_output[BRmotpin]-motor_output[FLmotpin]-motor_output[BLmotpin])*MAX_MOTOR_THRUST*MOTOR_DISTANCE_FROM_CENTRE/MASS_MOMENT_INTERTIA;
         true_gyro[0]+=x_acc*dt;
         //mock imu
         imu.imu_record_step++;
@@ -59,7 +62,10 @@ int main(){
     return 0;
 }
 
-
+void PhysicsUpdate(){
+  float thrusts[4];
+  for
+}
 
 timeb t_start;
 unsigned long millis() {

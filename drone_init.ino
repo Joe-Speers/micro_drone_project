@@ -59,7 +59,7 @@ void loop(){
         }
         
     }
-    if(i%100==0){
+    if(i%100==0 && false){
         Serial.println(i);
     }
     if(i%100==0 && false){
@@ -77,10 +77,15 @@ void loop(){
     
     float kp=comms.controlin[2];
     float ki=float(comms.controlin[3])/10.0;
-    float roll=kp*(-imu.acc[1]*10)+ks*(-imu.gyro[0]/100)+ki*(-x_integral/10);
-    float pitch=kp*(imu.acc[0]*10)+ks*(-imu.gyro[1]/100)+ki*(-y_integral/10);
-    x_integral+=imu.gyro[0]*dt;
-    y_integral+=imu.gyro[1]*dt;
+    float integral_decay=float(comms.controlin[5])/1000.0;
+    float roll=kp*(-imu.acc[1]*10)+ks*(-imu.gyro[0]/100)+ki*(-x_integral);
+    float pitch=kp*(imu.acc[0]*10)+ks*(-imu.gyro[1]/100)+ki*(y_integral);
+    x_integral+=imu.acc[1]*dt;
+    y_integral+=imu.acc[0]*dt;
+    if(x_integral>0) x_integral-=integral_decay*dt;
+    if(x_integral<0) x_integral+=integral_decay*dt;
+    if(y_integral>0) y_integral-=integral_decay*dt;
+    if(y_integral<0) y_integral+=integral_decay*dt;
     float yaw=(-imu.gyro[2]/100)*float(comms.controlin[4])/10;
     BLmot=thrust+yaw-pitch-roll;
     BRmot=thrust-yaw-pitch+roll;

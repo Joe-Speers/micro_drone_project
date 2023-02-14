@@ -7,18 +7,20 @@ import numpy as np
 address = "FB:5B:53:8A:0F:AE"
 CONSOLE_UUID = "0000aaaa-0000-1000-8000-00805f9b34fb"
 CONTROL_UUID = "0000bbbb-0000-1000-8000-00805f9b34fb"
-control_settings = [0, 255, 255, 0, 0]
-control_settings[0]=74    #thrust
+control_settings = [0, 0, 0, 0, 0,0]
+control_settings[0]=92    #thrust
 control_settings[1]=200   #ks val 200
-control_settings[2]=20   #kp 
-control_settings[3]=0   #ki 80
-control_settings[4]=160   #ks for yaw 160
+control_settings[2]=0   #kp 
+control_settings[3]=0   #ki 
+control_settings[4]=250   #ks for yaw 160 or 250
+control_settings[5]=10   #integral decay
 
 running=True
 downloadmode=False
 downloadgyro=[]
 downloadacc=[]
 data_index=0
+
 def console_callback(sender, data):
     global running
     global downloadmode

@@ -16,8 +16,8 @@ struct {
 struct {
     int CommsSetup() { return 0; }
     template<typename T> void Send(T x) { std::cout << "BT Coms: " << x << std::endl; }
-    uint8_t controlin[5];
-    void UpdateComms() {};
+    uint8_t controlin[6];
+    bool UpdateComms() {return false;};
 } comms;
 
 struct {
