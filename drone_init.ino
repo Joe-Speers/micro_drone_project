@@ -73,10 +73,10 @@ void loop(){
         comms.Send("GZ:"+String(imu.gyro[2]));
     }
     float thrust=comms.controlin[0];
-    float ks=float(comms.controlin[1])/10.0;
+    float ks=float(comms.controlin[1]);
     
     float kp=comms.controlin[2];
-    float ki=float(comms.controlin[3])/10.0;
+    float ki=float(comms.controlin[3]);
     float integral_decay=float(comms.controlin[5])/1000.0;
     float roll=kp*(-imu.acc[1]*10)+ks*(-imu.gyro[0]/100)+ki*(-x_integral);
     float pitch=kp*(imu.acc[0]*10)+ks*(-imu.gyro[1]/100)+ki*(y_integral);
@@ -86,7 +86,7 @@ void loop(){
     if(x_integral<0) x_integral+=integral_decay*dt;
     if(y_integral>0) y_integral-=integral_decay*dt;
     if(y_integral<0) y_integral+=integral_decay*dt;
-    float yaw=(-imu.gyro[2]/100)*float(comms.controlin[4])/10;
+    float yaw=(-imu.gyro[2]/100)*float(comms.controlin[4]);
     BLmot=thrust+yaw-pitch-roll;
     BRmot=thrust-yaw-pitch+roll;
     FLmot=thrust-yaw+pitch-roll;

@@ -64,7 +64,6 @@ int main(){
 
 void PhysicsUpdate(){
   float thrusts[4];
-  for
 }
 
 timeb t_start;
